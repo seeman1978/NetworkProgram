@@ -23,6 +23,7 @@ int main() {
         std::cout << "inet_pton error for " << "127.0.0.1" << '\n';
     }
     if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0){
+        //if server does not bind or listen, connect will fail.
         std::cout << "connect error" << '\n';
         return 0;
     }
@@ -33,5 +34,6 @@ int main() {
     if (n < 0){
         std::cout << "read error\n";
     }
+
     return 0;
 }
