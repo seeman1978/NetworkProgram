@@ -85,14 +85,13 @@ int main() {
     for (;  ; ) {
         chilen = sizeof(cliaddr);
         connfd  = accept(listenfd, (sockaddr*)&cliaddr, &chilen);
-        if ((childpid = fork()) == 0){
-            //child process
+        if ((childpid = fork()) < 0) {
+            err_sys("fork failed");
+        } else if (childpid == 0) {	/* child */
             close(listenfd);
             str_echo(connfd);
             exit(0);
-        }
-        else{
-            //parent process
+        } else {		/* parent */
             close(connfd);
         }
     }

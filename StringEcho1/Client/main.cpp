@@ -60,8 +60,7 @@ void str_cli(FILE *fp, int sockfd){
 }
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    int sockfd{0}, n{0};
+    int sockfd{0};
     char recvline[MAXLINE+1];
     struct sockaddr_in servaddr{};
     //ip v4 tcp
