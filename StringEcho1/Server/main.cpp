@@ -21,6 +21,7 @@ int main() {
 
     Bind(listenfd, (sockaddr*)&servaddr, sizeof(servaddr));
     listen(listenfd, 100);
+    Signal(SIGCHLD, sig_chld);
     for (;  ; ) {
         chilen = sizeof(cliaddr);
         connfd  = accept(listenfd, (sockaddr*)&cliaddr, &chilen);

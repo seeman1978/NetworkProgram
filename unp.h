@@ -29,4 +29,7 @@ FILE * Fopen(const char *filename, const char *mode);
 
 void Fputs(const char *ptr, FILE *stream);
 
+//signal
+Sigfunc * Signal(int signo, Sigfunc *func)
+
 #endif	/* __unp_h */
