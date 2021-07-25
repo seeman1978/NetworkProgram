@@ -1,4 +1,5 @@
 /* include signal */
+#include <csignal>
 #include	"unp.h"
 
 Sigfunc *
