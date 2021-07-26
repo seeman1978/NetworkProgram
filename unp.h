@@ -9,6 +9,7 @@
 
 #define	MAXLINE		4096	/* max text line length */
 void str_cli(FILE *fp, int sockfd);
+void str_cli_select(FILE *fp, int sockfd);
 void str_echo(int sockfd);
 
 void Writen(int, void *, size_t);
@@ -32,5 +33,8 @@ void Fputs(const char *ptr, FILE *stream);
 //signal
 typedef	void	Sigfunc(int);	/* for signal handlers */
 Sigfunc * Signal(int signo, Sigfunc *func);
+
+//socket
+int Select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 
 #endif	/* __unp_h */
