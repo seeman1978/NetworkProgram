@@ -45,4 +45,8 @@ int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr);
 int Select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 void Bind(int fd, const struct sockaddr *sa, socklen_t salen);
 void Shutdown(int fd, int how);
+#define HAVE_POLL
+#ifdef	HAVE_POLL
+int Poll(struct pollfd *fdarray, unsigned long nfds, int timeout);
+#endif
 #endif	/* __unp_h */

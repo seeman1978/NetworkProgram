@@ -20,6 +20,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <sys/select.h>
+#include <sys/poll.h>
 
 int
 Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
