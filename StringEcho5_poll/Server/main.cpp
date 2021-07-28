@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <cstring>
 #include <poll.h>
+#include <limits>
 #include "../../unp.h"
 
 
@@ -23,12 +24,12 @@ int main() {
 
     Bind(listenfd, (sockaddr*)&servaddr, sizeof(servaddr));
     Listen(listenfd, 100);
-
+    ///init
+    for (auto &c:client) {
+        c.fd = -1;  /* -1 indicates available entry */
+    }
     client[0].fd = listenfd;
     client[0].events = POLLRDNORM;
-    for (auto &c:client) {
-        c.fd = -1;
-    }
     maxi = 0;
 
     //macos系统中，由于内核将重启被中断的系统调用，于是accept不会返回错误。
