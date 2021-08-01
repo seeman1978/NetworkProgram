@@ -51,4 +51,11 @@ void Shutdown(int fd, int how);
 #ifdef	HAVE_POLL
 int Poll(struct pollfd *fdarray, unsigned long nfds, int timeout);
 #endif
+void Sendto(int fd, const void *ptr, size_t nbytes, int flags,
+       const struct sockaddr *sa, socklen_t salen);
+ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
+         struct sockaddr *sa, socklen_t *salenptr);
+
+void Inet_pton(int family, const char *strptr, void *addrptr);
+const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
 #endif	/* __unp_h */
