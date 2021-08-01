@@ -25,6 +25,7 @@
 #include <cstring>
 #include <cerrno>
 #include <sys/wait.h>
+#include <csignal>
 #include "unp.h"
 
 void *

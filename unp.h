@@ -24,6 +24,7 @@ size_t Read(int fd, void *ptr, size_t nbytes);
 size_t Readline(int fd, void *ptr, size_t maxlen);
 int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
+void *Malloc(size_t size);
 
 //error
 void err_quit(const char *fmt, ...);
@@ -58,4 +59,6 @@ ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
+char *Sock_ntop(const struct sockaddr *sa, socklen_t salen);
+
 #endif	/* __unp_h */
