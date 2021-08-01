@@ -25,8 +25,10 @@ size_t Readline(int fd, void *ptr, size_t maxlen);
 int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
 
+//error
 void err_quit(const char *fmt, ...);
 void err_sys(const char *fmt, ...);
+void err_ret(const char *fmt, ...);
 
 void Fclose(FILE *fp);
 FILE* Fdopen(int fd, const char *type);
