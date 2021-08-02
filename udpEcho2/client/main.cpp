@@ -20,6 +20,20 @@ void dg_cli(FILE *fp, int sockfd, const sockaddr* pServAddr, socklen_t servlen){
     }
 }
 
+void dg_cli_connect(FILE *fp, int sockfd, const sockaddr* pServAddr, socklen_t servlen){
+    uint32_t n{0};
+    char sendline[MAXLINE], recvline[MAXLINE+1];
+    Connect(sockfd, (sockaddr*)pServAddr, servlen);
+
+    while (Fgets(sendline, MAXLINE, fp) != nullptr){
+        Write(sockfd, sendline, strlen(sendline));
+
+        n = Read(sockfd, recvline, MAXLINE);
+
+        recvline[n] = 0;
+        Fputs(recvline, stdout);
+    }
+}
 int main() {
     int sockfd{0};
     struct sockaddr_in servaddr{} ;
