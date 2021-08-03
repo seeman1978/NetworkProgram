@@ -25,6 +25,7 @@ size_t Readline(int fd, void *ptr, size_t maxlen);
 int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
 void *Malloc(size_t size);
+pid_t Fork(void);
 
 //error
 void err_quit(const char *fmt, ...);
@@ -56,6 +57,7 @@ void Sendto(int fd, const void *ptr, size_t nbytes, int flags,
        const struct sockaddr *sa, socklen_t salen);
 ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
          struct sockaddr *sa, socklen_t *salenptr);
+void Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
