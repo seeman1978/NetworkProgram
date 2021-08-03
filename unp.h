@@ -58,6 +58,8 @@ void Sendto(int fd, const void *ptr, size_t nbytes, int flags,
 ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
          struct sockaddr *sa, socklen_t *salenptr);
 void Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
+void Connect(int fd, const struct sockaddr *sa, socklen_t salen);
+void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);

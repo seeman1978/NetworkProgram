@@ -1,5 +1,6 @@
 #include <iostream>
-#include "unp.h"
+#include <netinet/in.h>
+#include "../unp.h"
 int main() {
     int sockfd;
     socklen_t len;
@@ -9,8 +10,8 @@ int main() {
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(SERV_PORT);
-    Inet_pton(AF_INET, "www.sina.com.cn", &servaddr, sizeof(servaddr));
+    servaddr.sin_port = htons(1234);
+    Inet_pton(AF_INET, "www.sina.com.cn", &servaddr.sin_addr);
     Connect(sockfd, (sockaddr*)&servaddr, sizeof(servaddr));
 
     len = sizeof(cliaddr);
