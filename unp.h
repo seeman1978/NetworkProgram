@@ -31,6 +31,7 @@ pid_t Fork(void);
 void err_quit(const char *fmt, ...);
 void err_sys(const char *fmt, ...);
 void err_ret(const char *fmt, ...);
+void err_msg(const char *fmt, ...);
 
 void Fclose(FILE *fp);
 FILE* Fdopen(int fd, const char *type);
