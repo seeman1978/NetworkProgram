@@ -9,6 +9,7 @@
 
 #define	MAXLINE		4096	/* max text line length */
 #define	FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+#define	LISTENQ		1024	/* 2nd argument to listen() */
 /* default file access permissions for new files */
 #define	DIR_MODE	(FILE_MODE | S_IXUSR | S_IXGRP | S_IXOTH)
 /* default permissions for new directories */
@@ -68,6 +69,7 @@ const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len
 char *Sock_ntop(const struct sockaddr *sa, socklen_t salen);
 
 int Tcp_connect(const char *host, const char *serv);
+int Tcp_listen(const char *host, const char *serv, socklen_t *addrlenp);
 
 char * Sock_ntop_host(const struct sockaddr *sa, socklen_t salen);
 
