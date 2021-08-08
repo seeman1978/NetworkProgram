@@ -70,6 +70,7 @@ char *Sock_ntop(const struct sockaddr *sa, socklen_t salen);
 
 int Tcp_connect(const char *host, const char *serv);
 int Tcp_listen(const char *host, const char *serv, socklen_t *addrlenp);
+int Udp_client(const char *host, const char *serv, sockaddr **saptr, socklen_t *lenptr);
 
 char * Sock_ntop_host(const struct sockaddr *sa, socklen_t salen);
 
