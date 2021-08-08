@@ -61,9 +61,14 @@ ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
 void Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
 void Connect(int fd, const struct sockaddr *sa, socklen_t salen);
 void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
+void Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
 char *Sock_ntop(const struct sockaddr *sa, socklen_t salen);
+
+int Tcp_connect(const char *host, const char *serv);
+
+char * Sock_ntop_host(const struct sockaddr *sa, socklen_t salen);
 
 #endif	/* __unp_h */
