@@ -63,6 +63,7 @@ void Setsockopt(int fd, int level, int optname, const void *optval, socklen_t op
 void Connect(int fd, const struct sockaddr *sa, socklen_t salen);
 void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
 void Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr);
+int Readable_timeo(int fd, int sec);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
