@@ -21,6 +21,8 @@ void str_cli(FILE *fp, int sockfd);
 void str_cli_select(FILE *fp, int sockfd);
 void str_cli_select_shutdown(FILE *fp, int sockfd);
 void str_echo(int sockfd);
+void dg_echo(int sockfd, sockaddr *pcliaddr, socklen_t clilen);
+void dg_cli(FILE *fp, int sockfd, const sockaddr *pservaddr, socklen_t servlen);
 
 void Write(int fd, void *ptr, size_t nbytes);
 void Writen(int, void *, size_t);
