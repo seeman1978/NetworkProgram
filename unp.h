@@ -14,6 +14,9 @@
 #define	DIR_MODE	(FILE_MODE | S_IXUSR | S_IXGRP | S_IXOTH)
 /* default permissions for new directories */
 
+#define	UNIXSTR_PATH	"/tmp/unix.str"	/* Unix domain stream */
+#define	UNIXDG_PATH		"/tmp/unix.dg"	/* Unix domain datagram */
+
 void str_cli(FILE *fp, int sockfd);
 void str_cli_select(FILE *fp, int sockfd);
 void str_cli_select_shutdown(FILE *fp, int sockfd);
