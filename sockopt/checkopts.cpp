@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <netinet/sctp.h>
 #include <iostream>
 #include <unistd.h>
 #include "../unp.h"
