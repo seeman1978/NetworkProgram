@@ -2,7 +2,6 @@
 #include "../../unp.h"
 #include <sys/un.h>
 #include <unistd.h>
-#include <csignal>
 #include <sys/wait.h>
 
 //处理僵死进程的可移植方法：捕获SIGCHLD信号，并调用wait或者waitpid函数
@@ -20,7 +19,7 @@ int main() {
     pid_t   childpid;
     socklen_t clilen;
     struct sockaddr_un cliaddr, servaddr;
-    void sig_chld(int);
+
     listenfd = Socket(AF_LOCAL, SOCK_STREAM, 0);
     unlink(UNIXSTR_PATH);
     bzero(&servaddr, sizeof servaddr);

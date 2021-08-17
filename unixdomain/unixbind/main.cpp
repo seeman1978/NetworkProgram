@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../../unp.h"
 #include <sys/un.h>
 #include <unistd.h>
