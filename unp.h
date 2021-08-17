@@ -13,7 +13,7 @@
 /* default file access permissions for new files */
 #define	DIR_MODE	(FILE_MODE | S_IXUSR | S_IXGRP | S_IXOTH)
 /* default permissions for new directories */
-
+#define	BUFFSIZE	8192	/* buffer size for reads and writes */
 #define	UNIXSTR_PATH	"/tmp/unix.str"	/* Unix domain stream */
 #define	UNIXDG_PATH		"/tmp/unix.dg"	/* Unix domain datagram */
 
@@ -32,7 +32,10 @@ int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
 void *Malloc(size_t size);
 pid_t Fork(void);
+pid_t Waitpid(pid_t pid, int *iptr, int options);
 
+ssize_t Read_fd(int fd, void *ptr, size_t nbytes, int *recvfd);
+ssize_t write_fd(int fd, void *ptr, size_t nbytes, int sendfd);
 //error
 void err_quit(const char *fmt, ...);
 void err_sys(const char *fmt, ...);
@@ -69,6 +72,7 @@ void Connect(int fd, const struct sockaddr *sa, socklen_t salen);
 void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
 void Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr);
 int Readable_timeo(int fd, int sec);
+void Socketpair(int family, int type, int protocol, int *fd);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
