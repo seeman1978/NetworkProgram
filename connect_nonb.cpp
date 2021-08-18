@@ -12,23 +12,24 @@ connect_nonb(int sockfd, const SA *saptr, socklen_t salen, int nsec)
 	Fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
 
 	error = 0;
-	if ( (n = connect(sockfd, saptr, salen)) < 0)
-		if (errno != EINPROGRESS)
-			return(-1);
-
+	if ( (n = connect(sockfd, saptr, salen)) < 0){
+	    if (errno != EINPROGRESS){   /// EINPROGRESS 表示连接建立已经启动但是尚未完成
+	        return(-1);
+	    }
+	}
 	/* Do whatever we want while the connect is taking place. */
 
-	if (n == 0)
-		goto done;	/* connect completed immediately */
-
+	if (n == 0){
+	    goto done;	/* connect completed immediately */
+	}
 	FD_ZERO(&rset);
 	FD_SET(sockfd, &rset);
 	wset = rset;
 	tval.tv_sec = nsec;
 	tval.tv_usec = 0;
 
-	if ( (n = Select(sockfd+1, &rset, &wset, NULL,
-					 nsec ? &tval : NULL)) == 0) {
+	if ( (n = Select(sockfd+1, &rset, &wset, nullptr,
+					 nsec ? &tval : nullptr)) == 0) { /// nullptr use default timeout
 		close(sockfd);		/* timeout */
 		errno = ETIMEDOUT;
 		return(-1);
