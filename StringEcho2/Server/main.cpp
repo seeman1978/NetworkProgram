@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <cstring>
-#include <syslog.h>		/* for syslog() */
+#include <sys/wait.h>
 #include "../../unp.h"
 //处理僵死进程的可移植方法：捕获SIGCHLD信号，并调用wait或者waitpid函数
 void sig_chld(int signo){
