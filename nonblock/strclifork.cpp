@@ -22,6 +22,6 @@ void str_cli(FILE* fp, int sockfd){
         Writen(sockfd, sendline, strlen(sendline));
     }
     Shutdown(sockfd, SHUT_WR); /// EOF on stdin, send FIN
-    pause();
+    pause();   ///receive SIGTERM and active
     return;
 }
