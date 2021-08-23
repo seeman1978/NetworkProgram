@@ -86,4 +86,6 @@ int Udp_server(const char *host, const char *serv, socklen_t *addrlenp);
 
 char * Sock_ntop_host(const struct sockaddr *sa, socklen_t salen);
 
+struct addrinfo * Host_serv(const char *host, const char *serv, int family, int socktype);
+
 #endif	/* __unp_h */

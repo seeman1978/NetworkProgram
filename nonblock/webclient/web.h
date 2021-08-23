@@ -20,7 +20,7 @@ struct file{
 #define F_READING    2     /// connect() complete ; now reading
 #define F_DONE       4     /// all done
 
-#define GET_CMD "GET %s HTTP/1.0\r\n\n\"
+#define GET_CMD "GET %s HTTP/1.0\r\n\r\n"
 
 /// global
 int nconn/* 当前打开着的连接数*/, nfiles, nlefttoconn/*尚无tcp连接的文件数*/,
@@ -28,8 +28,8 @@ int nconn/* 当前打开着的连接数*/, nfiles, nlefttoconn/*尚无tcp连接�
 fd_set rset, wset;
 
 /// function prototypes
-void home_page(const char*, const char *);
-void start_connect(struct file*);
+void home_page(const char* host, const char *fname);
+void start_connect(struct file* fptr);
 void write_get_cmd(struct file*);
 
 #endif //WEBCLIENT_WEB_H
