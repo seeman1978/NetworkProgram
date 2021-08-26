@@ -36,6 +36,9 @@ pid_t Waitpid(pid_t pid, int *iptr, int options);
 int Fcntl(int fd, int cmd, int arg);
 void * Calloc(size_t n, size_t size);
 int Ioctl(int fd, int request, void *arg);
+void Sysctl(int *name, u_int namelen, void *oldp, size_t *oldlenp,
+	   void *newp, size_t newlen);
+
 
 ssize_t Read_fd(int fd, void *ptr, size_t nbytes, int *recvfd);
 ssize_t write_fd(int fd, void *ptr, size_t nbytes, int sendfd);
