@@ -3,9 +3,10 @@
 #include <cstring>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <csetjmp>
 #include "../../unp.h"
 
-static sigjum_buf jmpbuf;
+static sigjmp_buf jmpbuf;
 
 static void recvfrom_alarm(int signo){
     siglongjmp(jmpbuf, 1);
