@@ -3,4 +3,5 @@ project(dgclient_broadcast4)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(dgclient_broadcast4 main.cpp)
+add_executable(dgclient_broadcast4 main.cpp ../../error.cpp ../../wrapunix.cpp ../../wrapsock.cpp
+        ../../sock_ntop_host.cpp ../../wrapstdio.cpp ../../wraplib.cpp ../../signal.cpp)

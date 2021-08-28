@@ -1,5 +1,6 @@
 #include <iostream>
 #include <netinet/in.h>
+#include <cstring>
 #include "../../unp.h"
 
 void dg_echo(int sockfd, sockaddr* pCliAddr, socklen_t clilen){

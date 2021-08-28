@@ -1,5 +1,13 @@
 #include <iostream>
+#include <csignal>
+#include <cstring>
+#include <unistd.h>
+#include <netinet/in.h>
 #include "../../unp.h"
+
+static void recvfrom_alarm(int signo){
+    return;
+}
 
 void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t servlen){
     int n;
@@ -9,7 +17,7 @@ void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t se
     sigset_t sigset_alrm, sigset_empty;
     socklen_t len;
     struct sockaddr * preply_addr;
-    preply_addr = Malloc(servlen);
+    preply_addr = static_cast<sockaddr *>(Malloc(servlen));
     Setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &on, sizeof(on));
     FD_ZERO(&rset);
 
@@ -27,7 +35,7 @@ void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t se
             FD_SET(sockfd, &rset);
             n = pselect(sockfd+1, &rset, nullptr, nullptr, nullptr, &sigset_empty);
             if (n < 0){
-                if (neeno == EINTR){
+                if (errno == EINTR){
                     break;
                 }
                 else{
@@ -46,9 +54,7 @@ void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t se
     free(preply_addr);
 }
 
-static void recvfrom_alarm(int signo){
-    return;
-}
+
 
 int main() {
     int sockfd{0};
