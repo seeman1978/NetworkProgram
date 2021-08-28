@@ -8,7 +8,8 @@
 static int pipefd[2];
 
 static void recvfrom_alarm(int signo){
-    Write(pipefd[1], "", 1);    /// write one null byte to pipe
+    char ch[2]{""};
+    Write(pipefd[1], ch, 1);    /// write one null byte to pipe
     return;
 }
 
