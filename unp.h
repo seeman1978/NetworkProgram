@@ -100,4 +100,8 @@ void Mcast_join(int sockfd, const struct sockaddr *grp, socklen_t grplen,
 
 int family_to_level(int family);
 
+void Mcast_set_loop(int sockfd, int onoff);
+
+int sockfd_to_family(int sockfd);
+
 #endif	/* __unp_h */
