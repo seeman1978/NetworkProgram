@@ -41,6 +41,7 @@ void Sigemptyset(sigset_t *);
 void Sigaddset(sigset_t *set, int signo);
 void Sigprocmask(int how, const sigset_t *set, sigset_t *oset);
 void Pipe(int *fds);
+void Gettimeofday(struct timeval *tv, void *foo);
 
 ssize_t Read_fd(int fd, void *ptr, size_t nbytes, int *recvfd);
 ssize_t write_fd(int fd, void *ptr, size_t nbytes, int sendfd);
@@ -104,4 +105,7 @@ void Mcast_set_loop(int sockfd, int onoff);
 
 int sockfd_to_family(int sockfd);
 
+void sock_set_wild(struct sockaddr *sa, socklen_t salen);
+
+void sock_set_addr(struct sockaddr *sa, socklen_t salen, const void *addr);
 #endif	/* __unp_h */
