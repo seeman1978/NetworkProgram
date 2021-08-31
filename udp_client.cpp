@@ -39,5 +39,5 @@ udp_client(const char *host, const char *serv, sockaddr **saptr, socklen_t *lenp
 int
 Udp_client(const char *host, const char *serv, sockaddr **saptr, socklen_t *lenptr)
 {
-	return(udp_client(host, serv, saptr, lenptr));
+	return udp_client(host, serv, saptr, lenptr);
 }

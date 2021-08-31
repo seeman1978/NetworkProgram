@@ -95,4 +95,9 @@ char * Sock_ntop_host(const struct sockaddr *sa, socklen_t salen);
 
 struct addrinfo * Host_serv(const char *host, const char *serv, int family, int socktype);
 
+void Mcast_join(int sockfd, const struct sockaddr *grp, socklen_t grplen,
+           const char *ifname, u_int ifindex);
+
+int family_to_level(int family);
+
 #endif	/* __unp_h */
