@@ -7,6 +7,12 @@
 #include <sys/socket.h>
 #include <stdio.h>
 
+/* The structure returned by recvfrom_flags() */
+struct unp_in_pktinfo {
+    struct in_addr	ipi_addr;	/* dst IPv4 address */
+    int				ipi_ifindex;/* received interface index */
+};
+
 #define	MAXLINE		4096	/* max text line length */
 #define	FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
 #define	LISTENQ		1024	/* 2nd argument to listen() */
@@ -108,4 +114,11 @@ int sockfd_to_family(int sockfd);
 void sock_set_wild(struct sockaddr *sa, socklen_t salen);
 
 void sock_set_addr(struct sockaddr *sa, socklen_t salen, const void *addr);
+
+char *If_indextoname(unsigned int index, char *name);
+
+ssize_t recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp, struct sockaddr *sa,
+                       socklen_t *salenptr, struct unp_in_pktinfo *pktp);
+ssize_t Recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp,
+               struct sockaddr *sa, socklen_t *salenptr, struct unp_in_pktinfo *pktp);
 #endif	/* __unp_h */
