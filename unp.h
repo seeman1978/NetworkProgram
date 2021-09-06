@@ -6,7 +6,9 @@
 
 #include <sys/socket.h>
 #include <stdio.h>
-
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
 /* The structure returned by recvfrom_flags() */
 struct unp_in_pktinfo {
     struct in_addr	ipi_addr;	/* dst IPv4 address */
@@ -80,8 +82,10 @@ int Poll(struct pollfd *fdarray, unsigned long nfds, int timeout);
 #endif
 void Sendto(int fd, const void *ptr, size_t nbytes, int flags,
        const struct sockaddr *sa, socklen_t salen);
+void	 Send(int, const void *, size_t, int);
 ssize_t Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
          struct sockaddr *sa, socklen_t *salenptr);
+ssize_t	 Recv(int, void *, size_t, int);
 void Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen);
 void Connect(int fd, const struct sockaddr *sa, socklen_t salen);
 void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
