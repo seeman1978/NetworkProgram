@@ -92,6 +92,7 @@ void Getsockname(int fd, struct sockaddr *sa, socklen_t *salenptr);
 void Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr);
 int Readable_timeo(int fd, int sec);
 void Socketpair(int family, int type, int protocol, int *fd);
+int		 Sockatmark(int);
 
 void Inet_pton(int family, const char *strptr, void *addrptr);
 const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
