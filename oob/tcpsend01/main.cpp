@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     sleep(1);
 
     Send(sockfd, "4", 1, MSG_OOB);
-    printf("worte 1 byte of OOB data\n");
+    printf("wrote 1 byte of OOB data\n");
     sleep(1);
 
     Write(sockfd, (void *)"56", 2);
