@@ -1,6 +1,10 @@
 #include <cerrno>
 #include <cstdlib>
 #include <algorithm>
+#include <unistd.h>
+#include <csignal>
+#include <sys/fcntl.h>
+#include <strings.h>
 #include "../../unp.h"
 
 static int servfd;
@@ -105,7 +109,7 @@ int main() {
 
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(1313);
-    Inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr) <= 0);
+    Inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
     Connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 
     str_cli(stdin, sockfd);

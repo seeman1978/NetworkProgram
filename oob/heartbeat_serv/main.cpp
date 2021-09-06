@@ -1,5 +1,11 @@
 #include <cerrno>
 #include <cstdlib>
+#include <sys/fcntl.h>
+#include <unistd.h>
+#include <csignal>
+#include <strings.h>
+#include <sys/wait.h>
+#include <iostream>
 #include "../../unp.h"
 
 static int servfd;
@@ -49,7 +55,7 @@ void str_echo(int sockfd)
 {
     ssize_t		n;
     char		buf[MAXLINE];
-    heartbeat_serv(sockfd, 1, 5)
+    heartbeat_serv(sockfd, 1, 5);
 again:
     while ( (n = read(sockfd, buf, MAXLINE)) > 0){
         Writen(sockfd, buf, n);
@@ -59,6 +65,16 @@ again:
         goto again;
     else if (n < 0)
         err_sys("str_echo: read error");
+}
+
+//处理僵死进程的可移植方法：捕获SIGCHLD信号，并调用wait或者waitpid函数
+void sig_chld(int signo){
+    pid_t pid;
+    int stat;
+    while((pid = waitpid(-1, &stat, WNOHANG)) > 0){
+        std::cout << "child " << pid << " terminated\n";    //在实际的项目中，不要调用cout。此处只是为了演示。
+    }
+    return;
 }
 
 int main() {
