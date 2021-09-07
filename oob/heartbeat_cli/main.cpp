@@ -5,6 +5,7 @@
 #include <csignal>
 #include <sys/fcntl.h>
 #include <strings.h>
+#include <cstring>
 #include "../../unp.h"
 
 static int servfd;
@@ -55,11 +56,11 @@ void str_cli(FILE *fp, int sockfd)
 {
     int maxfdp1{0}, stdineof{0};
     fd_set rset;    //read fd sets
-    char	buf[MAXLINE];
-    int n;
+    char		sendline[MAXLINE], recvline[MAXLINE];
+
+    heartbeat_cli(sockfd, 1, 5);
 
     FD_ZERO(&rset);
-    heartbeat_cli(sockfd, 1, 5);
     for (;;){
         if(stdineof == 0){
             FD_SET(fileno(fp), &rset);
@@ -68,15 +69,18 @@ void str_cli(FILE *fp, int sockfd)
         FD_SET(sockfd, &rset);
 
         maxfdp1 = std::max(fileno(fp), sockfd) + 1;
-        int nResult = Select(maxfdp1, &rset, nullptr, nullptr, nullptr);
-        if(nResult == EINTR){
-            continue;
+        int nResult = select(maxfdp1, &rset, nullptr, nullptr, nullptr);
+        if(nResult == -1){
+            if(errno == EINTR){
+                continue;
+            }
+            else{
+                err_ret("select error");
+            }
         }
-        else{
-            err_ret("select error");
-        }
+
         if (FD_ISSET(sockfd, &rset)){
-            if ((n=Read(sockfd, buf, MAXLINE)) == 0){
+            if (Readline(sockfd, recvline, MAXLINE) == 0){
                 if (stdineof == 1){
                     return; /// normal termination
                 }
@@ -84,17 +88,19 @@ void str_cli(FILE *fp, int sockfd)
                     err_quit("str_cli: server terminated prematurely");
                 }
             }
-            Writen(fileno(stdout), buf, n);
+            Writen(fileno(stdout), recvline, strlen(recvline));
         }
+
         if(FD_ISSET(fileno(fp), &rset)){
-            if ((n=Read(fileno(fp), buf, MAXLINE)) == 0){
+            if (Fgets(sendline, MAXLINE, fp) == nullptr){
                 stdineof = 1;
+                alarm(0);			/* turn off heartbeat */
                 Shutdown(sockfd, SHUT_WR);    /// send FIN
                 FD_CLR(fileno(fp), &rset);
                 continue;
             }
 
-            Writen(sockfd, buf, n);
+            Writen(sockfd, sendline, strlen(sendline));
         }
     }
 }
@@ -108,7 +114,7 @@ int main() {
     bzero(&servaddr, sizeof(servaddr));
 
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(1313);
+    servaddr.sin_port = htons(1234);
     Inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
     Connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 

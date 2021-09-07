@@ -89,7 +89,7 @@ int main() {
 
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(1313);
+    servaddr.sin_port = htons(1234);
 
     Bind(listenfd, (sockaddr*)&servaddr, sizeof(servaddr));
     Listen(listenfd, 100);
