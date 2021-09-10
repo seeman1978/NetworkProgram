@@ -54,6 +54,72 @@ void proc_v4(char* ptr, ssize_t len, struct  msghdr* msg, struct timeval *tvrecv
     }
 }
 
+void init_v6(){
+#ifdef IPV6
+    int on = 1;
+    if (verbose == 0){
+        /// install a filter that only passer ICMP6-ECHO_REPLY unless verbose
+        struct icmp6_filter myfilt;
+        ICMP6_FILTER_SETBLOCKALL(&myfilt);
+        ICMP6_FILTER_SETPASS(ICMP6_ECHO_REPLY, &myfilt);
+        setsockopt(sockfd, IPPROTO_IPV6, ICMP6_FILTER, &myfilt, sizeof(myfilt));
+        ///ignore error return; the filter is an optimaization
+    }
+    ///ignore errer returned below; we just won't receive the hop limit
+#ifdef IPV6IPV6_RECVHOPLIMIT
+    setsockopt(sockfd, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &on, sizeof(on));
+#else
+    setsockopt(sockfd, IPPROTO_IPV6, IPV6_HOPLIMIT, &on, sizeof on);
+#endif
+#endif
+}
+
+void proc_v6(char* ptr, ssize_t len, struct  msghdr* msg, struct timeval *tvrecv){
+#ifdef IPV6
+    double rtt;
+    struct icmp6_hdr *icmp6;
+    struct timeval *tvsend;
+    struct cmsghdr* cmsg;
+    int hlim;
+
+    icmp6 = (struct icmp6_hdr*)ptr; /// start of IP header
+    if(len < 8){/// malformed packet
+        return;
+    }
+
+    if (icmp6->icmp6_type == ICMP6_ECHOREPLY){
+        if (icmp6->icmp6_id != pid){
+            return; /// not a response to our ECHO_REQUEST
+        }
+        if (len < 16){
+            return; /// not enough data to use
+        }
+        tvsend = (struct timeval*)(icmp6+1);
+        tv_sub(tvrecv, tvsend);
+        rtt = tvrecv->tv_sec * 1000.0 + tvrecv->tv_usec/1000.0;
+        hlim = -1;
+        for(cmsg = CMSG_FIRSTHDR(msg); cmsg != nullptr; cmsg = CMSG_NXTHDR(msg, cmsg)){
+            if(cmsg->cmsg_level == IPPROTO_IPV6 && cmsg->cmsg_type == IPV6_HOPLIMIT){
+                hlim = *(u_int32_t*)CMSG_DATA(cmsg);
+                break;
+            }
+        }
+        printf("%d bytes from %s: seq=%u, hlim=", len, Sock_ntop_host(pr->sarecv, pr->salen),
+               icmp6->icmp6_seq);
+        if(hlim == -1){
+            printf("???");  ///ancillary data missing
+        }
+        else{
+            printf("%d", hlim);d
+        }
+        printf(", rtt=%.3f ms\n", rtt);
+    }
+    else if (verbose){
+        printf("%d bytes from %s : type=%d, code=%d\n", len, Sock_ntop_host(pr->sarecv, pr->salen), icmp6->icmp6_type, icmp6->icmp6_code);
+    }
+#endif
+}
+
 void readloop(){
     int size;
     char recvbuf[BUFFSIZE], controlbuf[BUFFSIZE];
