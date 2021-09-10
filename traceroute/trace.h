@@ -1,8 +1,9 @@
-#include	"unp.h"
+#include	"../unp.h"
 #include	<netinet/in_systm.h>
 #include	<netinet/ip.h>
 #include	<netinet/ip_icmp.h>
 #include	<netinet/udp.h>
+#include <cstdlib>
 
 #define	BUFSIZE		1500
 

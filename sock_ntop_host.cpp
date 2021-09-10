@@ -1,6 +1,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <cstring>
 #include	"unp.h"
 
 #ifdef	HAVE_SOCKADDR_DL_STRUCT

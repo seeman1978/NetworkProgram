@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <signal.h>
 /* The structure returned by recvfrom_flags() */
 struct unp_in_pktinfo {
     struct in_addr	ipi_addr;	/* dst IPv4 address */

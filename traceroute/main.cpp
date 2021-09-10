@@ -1,8 +1,10 @@
 #include "trace.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netinet/ip.h>
-struct proto proto_v4 
+#include <unistd.h>
+#include <netdb.h>
+
+struct proto proto_v4
 {
 	icmpcode_v4, recv_v4, nullptr, nullptr, nullptr, nullptr, 0, IPPROTO_ICMP,
 		IPPROTO_IP, IP_TTL
@@ -13,12 +15,12 @@ struct proto proto_v6 {icmpcode_v6, recv_v6, nullptr, nullptr, nullptr, nullptr,
 IPPROTO_ICMPV6, IPPROTO_IPV6, IPV6_UNICAST_HOPS};
 #endif
 
-int datalen = sizeof(struct rec);
-int max_ttl{ 30 };
-int nprobes{ 3 };
-u_short dport = 32768 + 666;
-
 int main(int argc, char** argv) {
+    datalen = sizeof(struct rec);
+    max_ttl = 30;
+    nprobes = 3;
+    dport = 32768 + 666;
+
 	int c;
 	struct addrinfo* ai;
 	char* h;
@@ -55,7 +57,7 @@ int main(int argc, char** argv) {
 		ai->ai_canonname ? ai->ai_canonname : h, h, max_ttl, datalen);
 	/// init according to protocol;
 	if (ai->ai_family == AF_INET) {
-		pr = &proto_v4j;
+		pr = &proto_v4;
 #ifdef IPV6
 	}
 	else if (ai->ai_family == AF_INET6) {
@@ -69,10 +71,10 @@ int main(int argc, char** argv) {
 		err_quit("unknown address family %d", ai->ai_family);
 	}
 	pr->sasend = ai->ai_addr;
-	pr->sarecv = Calloc(1, ai->ai_addrlen);
-	pr->salast = Calloc(1, ai->ai_addrlen);
-	pr->sabind = Calloc(1, ai->ai_addrlen);
-	pr->sasend = ai->ai_addrlen;
+	pr->sarecv = static_cast<sockaddr *>(Calloc(1, ai->ai_addrlen));
+	pr->salast = static_cast<sockaddr *>(Calloc(1, ai->ai_addrlen));
+	pr->sabind = static_cast<sockaddr *>(Calloc(1, ai->ai_addrlen));
+	pr->salen = ai->ai_addrlen;
 	traceloop();
 	exit(0);
 }
