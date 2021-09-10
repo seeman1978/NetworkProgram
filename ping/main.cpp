@@ -6,6 +6,12 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <cerrno>
+#include <cstring>
+
+void sig_alrm(int signo){
+    (*pr->fsend)();
+    alarm(1);
+}
 
 struct proto proto_v4{proc_v4, send_v4, nullptr, nullptr, nullptr, 0, IPPROTO_ICMP};
 #ifdef IPV6
@@ -118,6 +124,43 @@ void proc_v6(char* ptr, ssize_t len, struct  msghdr* msg, struct timeval *tvrecv
         printf("%d bytes from %s : type=%d, code=%d\n", len, Sock_ntop_host(pr->sarecv, pr->salen), icmp6->icmp6_type, icmp6->icmp6_code);
     }
 #endif
+}
+
+void send_v4(){
+    int len;
+    struct icmp* icmp;
+    icmp = (struct icmp*)sendbuf;
+    icmp->icmp_type = ICMP_ECHO;
+    icmp->icmp_code = 0;
+    icmp->icmp_id = pid;
+    icmp->icmp_seq = nsent++;
+    memset(icmp->icmp_data, 0xa5, datalen); ///fill with patter
+    Gettimeofday((struct timeval*)icmp->icmp_data, nullptr);
+    len = 8+datalen; /// checksum ICMP header and data
+    icmp->icmp_cksum = 0;
+    icmp->icmp_cksum = in_cksum((u_short*)icmp, len);
+    Sendto(sockfd, sendbuf, len, 0, pr->sasend, pr->salen);
+}
+
+void send_v6()
+{
+#ifdef	IPV6
+    int					len;
+	struct icmp6_hdr	*icmp6;
+
+	icmp6 = (struct icmp6_hdr *) sendbuf;
+	icmp6->icmp6_type = ICMP6_ECHO_REQUEST;
+	icmp6->icmp6_code = 0;
+	icmp6->icmp6_id = pid;
+	icmp6->icmp6_seq = nsent++;
+	memset((icmp6 + 1), 0xa5, datalen);	/* fill with pattern */
+	Gettimeofday((struct timeval *) (icmp6 + 1), NULL);
+
+	len = 8 + datalen;		/* 8-byte ICMPv6 header */
+
+	Sendto(sockfd, sendbuf, len, 0, pr->sasend, pr->salen);
+		/* 4kernel calculates and stores checksum for us */
+#endif	/* IPV6 */
 }
 
 void readloop(){

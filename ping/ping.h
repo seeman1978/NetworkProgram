@@ -34,6 +34,8 @@ struct proto {
   int	   	    icmpproto;	/* IPPROTO_xxx value for ICMP */
 } *pr;
 
+uint16_t in_cksum(uint16_t *addr, int len);
+
 #ifdef	IPV6
 
 #include	<netinet/ip6.h>
