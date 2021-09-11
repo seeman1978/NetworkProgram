@@ -43,6 +43,7 @@ void *Malloc(size_t size);
 pid_t Fork(void);
 pid_t Waitpid(pid_t pid, int *iptr, int options);
 int Fcntl(int fd, int cmd, int arg);
+int Fcntl(int fd, int cmd, int arg);
 void * Calloc(size_t n, size_t size);
 int Ioctl(int fd, int request, void *arg);
 void Sysctl(int *name, u_int namelen, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
@@ -54,6 +55,7 @@ void Gettimeofday(struct timeval *tv, void *foo);
 
 ssize_t Read_fd(int fd, void *ptr, size_t nbytes, int *recvfd);
 ssize_t write_fd(int fd, void *ptr, size_t nbytes, int sendfd);
+ssize_t Write_fd(int fd, void *ptr, size_t nbytes, int sendfd);
 //error
 void err_quit(const char *fmt, ...);
 void err_sys(const char *fmt, ...);
@@ -129,4 +131,5 @@ ssize_t Recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp,
                struct sockaddr *sa, socklen_t *salenptr, struct unp_in_pktinfo *pktp);
 void sock_set_port(struct sockaddr *sa, socklen_t salen, int port);
 int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2, socklen_t salen);
+int Sock_bind_wild(int sockfd, int family);
 #endif	/* __unp_h */
