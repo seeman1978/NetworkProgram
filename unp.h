@@ -127,4 +127,6 @@ ssize_t recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp, struct soc
                        socklen_t *salenptr, struct unp_in_pktinfo *pktp);
 ssize_t Recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp,
                struct sockaddr *sa, socklen_t *salenptr, struct unp_in_pktinfo *pktp);
+void sock_set_port(struct sockaddr *sa, socklen_t salen, int port);
+int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2, socklen_t salen);
 #endif	/* __unp_h */

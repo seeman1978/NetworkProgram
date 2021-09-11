@@ -4,6 +4,213 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <cstring>
+#include <cerrno>
+
+int gotalarm;
+
+void sig_alrm(int signo){
+    gotalarm = 1;   ///set flag to note that alarm occurred
+    return;
+}
+
+void tv_sub(struct timeval *out, struct timeval *in){
+    if ((out->tv_usec -= in->tv_usec) < 0){
+        --out->tv_sec;
+        out->tv_usec += 1000000;
+    }
+    out->tv_sec -= in->tv_sec;
+}
+
+const char* icmpcode_v6(int code){
+#ifdef IPV6
+    static char errbuf[100];
+    switch(code){
+        case ICMP6_DST_UNREACH_NOROUTE:
+            return "no route to host";
+        case ICMP6_DST_UNREACH_ADMIN:
+            return "adminsitratively prohibited";
+        case ICMP6_DST_UNREACH_NOTNEIGHBOR:
+            return "not a neighbor";
+        case ICMP6_DST_UNREACH_ADDR:
+            return "address unreachable";
+        case ICMP6_DST_UNREACH_NOPORT:
+            return "port unreachable";
+        default:
+            sprintf(errbuf, "[unknown code %d]", code);
+            return errbuf;
+    }
+#endif
+}
+
+int recv_v6(int seq, struct timeval *tv){
+#ifdef IPV6
+    int hlen2, ret, icmp6len;
+    socklen_t  len;
+    ssize_t n;
+
+    struct ip6_hdr *hip6;
+    struct icmp6_hdr *icmp6;
+    struct udphdr *udp;
+
+    gotalarm = 0;
+    alarm(3);
+
+    for (;;) {
+        if (gotalarm){
+            return -3;
+        }
+        len = pr->salen;
+        n = recvfrom(recvfd, recvbuf, sizeof recvbuf, 0, pr->sarecv, &len);
+        if (n < 0){
+            if (errno == EINTR){
+                continue;
+            }
+            else{
+                err_sys("recvfrom error");
+            }
+        }
+
+        icmp6 = (struct icmp6_hdr*)recvbuf;
+        if ((icmp6len = n) < 8){
+            continue;
+        }
+        if (icmp6->icmp6_type == ICMP6_TIME_EXCEEDED && icmp6->icmp6_code == ICMP_TIME_EXCEED_TRANSIT) {
+            if (icmp6len < 8 + sizeof(struct ip6_hdr) + 4) {
+                continue;
+            }
+            hip6 = (struct ip6_hdr *) (recvbuf + 8);
+            hlen2 = sizeof(struct ip6_hdr);
+            udp = (struct udphdr *) (recvbuf + 8 + hlen2);
+            if (hip6->ip6_nxt == IPPROTO_UDP && udp->uh_sport == htons(sport) && udp->uh_dport == htons(dport + seq)) {
+                ret = -2;
+                break;
+            } else if (icmp6->icmp6_type == ICMP6_DST_UNREACH) {
+                if (icmp6len < 8 + sizeof(struct ip6_hdr) + 4) {
+                    continue;
+                }
+                hip6 = (struct ip6_hdr *) (recvbuf + 8);
+                hlen2 = sizeof(struct ip6_hdr);
+                udp = (struct udphdr *) (recvbuf + 8 + hlen2);
+                if (hip6->ip6_nxt == IPPROTO_UDP && udp->uh_sport == htons(sport) &&
+                    udp->uh_dport == htons(dport + seq)) {
+                    if (icmp6->icmp6_code == ICMP6_DST_UNREACH_NOPORT) {
+                        return -1;  /// have reached destination
+                    } else {
+                        ret = icmp6->icmp6_code;
+                    }
+                    break;
+                }
+            } else if (verbose) {
+                printf(" (from %s:type=%d, code= %d)\n", Sock_ntop_host(pr->sarecv, pr->salen), icmp6->icmp6_type,
+                       icmp6 > icmp6_code);
+            }
+        }
+    }
+    alarm(0);
+    Gettimeofday(tv, nullptr);
+    return ret;
+#endif
+}
+
+int recv_v4(int seq, struct timeval *tv){
+    int hlen1, hlen2, ret, icmplen;
+    socklen_t  len;
+    ssize_t n;
+
+    struct ip *ip, *hip;
+    struct icmp *icmp;
+    struct udphdr *udp;
+
+    gotalarm = 0;
+    alarm(3);
+
+    for (;;) {
+        if (gotalarm){
+            return -3;
+        }
+        len = pr->salen;
+        n = recvfrom(recvfd, recvbuf, sizeof recvbuf, 0, pr->sarecv, &len);
+        if (n < 0){
+            if (errno == EINTR){
+                continue;
+            }
+            else{
+                err_sys("recvfrom error");
+            }
+        }
+        ip = (struct ip*)recvbuf;
+        hlen1 = ip->ip_hl << 2;
+
+        icmp = (struct icmp*)(recvbuf + hlen1);
+        if ((icmplen = n-hlen1) < 8){
+            continue;
+        }
+        if (icmp->icmp_type == ICMP_TIMXCEED && icmp->icmp_code == ICMP_TIMXCEED_INTRANS){
+            if (icmplen < 8+sizeof(struct ip)){
+                continue;
+            }
+            hip = (struct ip*)(recvbuf+hlen1+8);
+            hlen2 = hip->ip_hl << 2;
+            if (icmplen < 8+hlen2+4){
+                continue;
+            }
+            udp = (struct udphdr*)(recvbuf+hlen1+8+hlen2);
+            if (hip->ip_p == IPPROTO_UDP && udp->uh_sport == htons(sport) &&
+                udp->uh_dport == htons(dport+seq)){
+                ret = -2;
+                break;
+            }
+        }
+        else if (icmp->icmp_type == ICMP_UNREACH){
+            if (icmplen < 8 + hlen2 + 4){
+                continue;
+            }
+            udp = (struct udphdr*)(recvbuf + hlen1 + 8 + hlen2);
+            if (hip->ip_p == IPPROTO_UDP && udp->uh_sport == htons(sport) &&
+                udp->uh_dport == htons(dport+seq)){
+                if (icmp->icmp_code == ICMP_UNREACH_PORT){
+                    ret = -1;///have reached destination
+                }
+                else{
+                    ret = icmp->icmp_code;
+                }
+                break;
+            }
+        }
+        if (verbose){
+            printf(" (from %s:type=%d, code= %d)\n", Sock_ntop_host(pr->sarecv, pr->salen), icmp->icmp_type, icmp->icmp_code);
+        }
+    }
+    alarm(0);
+    Gettimeofday(tv, nullptr);
+    return ret;
+}
+
+const char *
+icmpcode_v4(int code)
+{
+    static char errbuf[100];
+    switch (code) {
+        case  0:	return("network unreachable");
+        case  1:	return("host unreachable");
+        case  2:	return("protocol unreachable");
+        case  3:	return("port unreachable");
+        case  4:	return("fragmentation required but DF bit set");
+        case  5:	return("source route failed");
+        case  6:	return("destination network unknown");
+        case  7:	return("destination host unknown");
+        case  8:	return("source host isolated (obsolete)");
+        case  9:	return("destination network administratively prohibited");
+        case 10:	return("destination host administratively prohibited");
+        case 11:	return("network unreachable for TOS");
+        case 12:	return("host unreachable for TOS");
+        case 13:	return("communication administratively prohibited by filtering");
+        case 14:	return("host recedence violation");
+        case 15:	return("precedence cutoff in effect");
+        default:	sprintf(errbuf, "[unknown code %d]", code);
+            return errbuf;
+    }
+}
 
 struct proto proto_v4
 {
@@ -32,6 +239,7 @@ void traceloop(){
         setsockopt(recvfd, IPPROTO_IPV6, ICMP6_FILTER, &myfilt, sizeof(myfilt));
     }
 #endif
+    /// give udp socket bind source port
     sendfd = Socket(pr->sasend->sa_family, SOCK_DGRAM, 0);
     pr->sabind->sa_family = pr->sasend->sa_family;
     sport = (getpid() & 0xffff)|0x8000; ///our source udp port
@@ -52,7 +260,7 @@ void traceloop(){
             rec->rec_seq = ++seq;
             rec->rec_ttl = ttl;
             Gettimeofday(&rec->rec_tv, nullptr);
-            sock_set_port(pr-.sasend, pr->salen, htons(dport + seq));
+            sock_set_port(pr->sasend, pr->salen, htons(dport + seq));
             Sendto(sendfd, sendbuf, datalen, 0, pr->sasend, pr->salen);
             if((code = (*pr->recv)(seq, &tvrecv)) == -3){
                 printf(" *");/// timeout , no reply
