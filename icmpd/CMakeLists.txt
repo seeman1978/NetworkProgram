@@ -4,4 +4,4 @@ project(icmpd)
 set(CMAKE_CXX_STANDARD 14)
 ADD_DEFINITIONS(-DHAVE_MSGHDR_MSG_CONTROL)
 add_executable(icmpd "main.cpp" "../write_fd.cpp" "../wrapsock.cpp" "../sock_bind_wild.cpp" "../error.cpp" "../wrapunix.cpp" 
-        "../wrapstdio.cpp" "../sock_ntop.cpp")
+        "../wrapstdio.cpp" "../sock_ntop.cpp" ../sock_get_port.cpp ../read_fd.cpp ../sock_ntop_host.cpp ../wraplib.cpp)

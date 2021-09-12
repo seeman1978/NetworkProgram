@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include <netinet/ip_icmp.h>
 #include <netinet/udp.h>
+#include <cerrno>
 
-void dg_cli(FILE* fp, int sockfd, const struct sockaddr* pservaddr, socklen_t servlen){
+void ss(FILE* fp, int sockfd, const struct sockaddr* pservaddr, socklen_t servlen){
     int icmpfd, maxfdp1;
     char sendline[MAXLINE], recvline[MAXLINE+1];
     fd_set rset;
@@ -128,12 +129,12 @@ int readable_conn(int i)
             goto clienterr;
 		}
 	}
-    Write(unixfd, "1", 1);
+    Write(unixfd, (void *) "1", 1);
     Close(recvfd);
     return --nready;
 
 clienterr:
-    Write(unixfd, "1", 1);
+    Write(unixfd, (void *) "1", 1);
 clientdone:
     Close(unixfd);
     if (recvfd >= 0)
@@ -254,7 +255,7 @@ int main(int argc, char** argv) {
     Bind(listenfd, (struct sockaddr*)&sun, sizeof sun);
     Listen(listenfd, LISTENQ);
     FD_SET(listenfd, &allset);
-    maxfd = maxfd(maxfd, listenfd);
+    maxfd = std::max(maxfd, listenfd);
 	
     for(;;)
     {
@@ -274,7 +275,7 @@ int main(int argc, char** argv) {
                 continue;
             }
         }
-#ifdef
+#ifdef IPV6
         if(FD_ISSET(fd6, &rset))
         {
 	        if(readable_v6() <= 0)
