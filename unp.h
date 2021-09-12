@@ -18,7 +18,7 @@ struct unp_in_pktinfo {
 
 #define	MAXLINE		4096	/* max text line length */
 #define	FILE_MODE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-#define	LISTENQ		1024	/* 2nd argument to listen() */
+constexpr auto LISTENQ = 1024	/* 2nd argument to listen() */;
 /* default file access permissions for new files */
 #define	DIR_MODE	(FILE_MODE | S_IXUSR | S_IXGRP | S_IXOTH)
 /* default permissions for new directories */
@@ -132,4 +132,5 @@ ssize_t Recvfrom_flags(int fd, void *ptr, size_t nbytes, int *flagsp,
 void sock_set_port(struct sockaddr *sa, socklen_t salen, int port);
 int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2, socklen_t salen);
 int Sock_bind_wild(int sockfd, int family);
+int sock_bind_wild(int sockfd, int family);
 #endif	/* __unp_h */
