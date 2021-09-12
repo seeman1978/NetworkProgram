@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.18)
 project(NetworkProgram)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(NetworkProgram main.cpp writen.cpp names/tcp_connect_cli/tcp_connect_cli.cpp nonblock/gf_time.cpp advio/recvfromflags.cpp advio/dgechoaddr.cpp)
+add_executable(NetworkProgram main.cpp)
