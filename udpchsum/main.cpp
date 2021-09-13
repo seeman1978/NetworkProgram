@@ -15,7 +15,7 @@ int verbose, zerosum;
 static void usage(const char*);
 int main(int argc, char** argv) {
     int c, lopt{0};
-    char *ptr, localname[1024], *localport;
+    char *ptr, localname[1024], *localport{nullptr};
     struct addrinfo *aip;
     opterr = 0;
     while ((c=getopt(argc, argv, "0i:l:v")) != -1){
@@ -40,6 +40,9 @@ int main(int argc, char** argv) {
                 break;
             case '?':
                 usage("unrecognized option");
+        		break;
+        	default:
+                break;
         }
     }
     if (optind != argc-2){

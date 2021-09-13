@@ -1,10 +1,10 @@
 {
+  "ActiveTargetSystem": "10.25.11.17",
   "ExpandedNodes": [
     "",
-    "\\icmpd",
-    "\\traceroute"
+    "\\traceroute",
+    "\\udpchsum"
   ],
-  "SelectedNode": "\\icmpd\\main.cpp",
-  "PreviewInSolutionExplorer": false,
-  "ActiveTargetSystem": "10.25.11.17"
+  "SelectedNode": "\\CMakeLists.txt",
+  "PreviewInSolutionExplorer": false
 }
