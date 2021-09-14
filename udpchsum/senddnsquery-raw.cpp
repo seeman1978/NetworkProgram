@@ -1,5 +1,6 @@
 #include<cstring>
 
+#include "udpcksum.h"
 #include "../unp.h"
 void send_dns_query() {
 	size_t nbytes;
@@ -26,4 +27,9 @@ void send_dns_query() {
 	ptr += 2;
 	*((uint16_t*)ptr) = htons(1);
 	ptr += 2;
+	nbytes = (ptr - buf) - sizeof(struct udpiphdr);
+	udp_write(buf, nbytes);
+	if (verbose) {
+		printf("sent:%d bytes of data\n", nbytes);
+	}
 }
