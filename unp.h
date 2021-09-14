@@ -134,4 +134,6 @@ int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2, sockle
 int Sock_bind_wild(int sockfd, int family);
 int sock_bind_wild(int sockfd, int family);
 int sock_get_port(const struct sockaddr *sa, socklen_t salen);
+
+ssize_t Readn(int fd, void *ptr, size_t nbytes);
 #endif	/* __unp_h */
