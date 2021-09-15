@@ -6,7 +6,7 @@
 
 static int nchildren;
 static pid_t *pids;
-
+long *cptr;
 void sig_int(int signo){
     void pr_cpu_time();
     for (int i = 0; i < nchildren; ++i) {
@@ -19,6 +19,10 @@ void sig_int(int signo){
         err_sys("wait error");
     }
     pr_cpu_time();
+
+    for (int i = 0; i < nchildren; ++i) {
+        printf("child %d, %ld connections\n", i, cptr[i]);
+    }
     exit(0);
 }
 
@@ -38,6 +42,9 @@ int main(int argc, char** argv) {
     }
     nchildren = atoi(argv[argc-1]);
     pids = static_cast<pid_t *>(Calloc(nchildren, sizeof(pid_t)));
+    long* meter(int nchildren);
+    cptr = meter(nchildren);
+
     for (i = 0; i < nchildren; ++i) {
         pids[i] = child_make(i, listenfd, addrlen);
     }

@@ -9,11 +9,20 @@ void child_main(int i, int listenfd, int addrlen){
     void web_child(int);
     socklen_t clilen;
     struct sockaddr *cliaddr;
+    extern long		*cptr;
+    fd_set	rset;
     cliaddr = static_cast<sockaddr *>(Malloc(addrlen));
     printf("child %ld starting\n", (long)getpid());
+    FD_ZERO(&rset);
     for (;;){
+        FD_SET(listenfd, &rset);
+        Select(listenfd+1, &rset, nullptr, nullptr, nullptr);
+        if (FD_ISSET(listenfd, &rset) == 0){
+            err_quit("listenfd readable");
+        }
         clilen = addrlen;
         connfd = Accept(listenfd, cliaddr, &clilen);
+        cptr[i]++;
         web_child(connfd);
         Close(connfd);
     }
