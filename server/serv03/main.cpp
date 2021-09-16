@@ -44,7 +44,8 @@ int main(int argc, char** argv) {
     pids = static_cast<pid_t *>(Calloc(nchildren, sizeof(pid_t)));
     long* meter(int nchildren);
     cptr = meter(nchildren);
-
+    void my_lock_init();
+    my_lock_init();
     for (i = 0; i < nchildren; ++i) {
         pids[i] = child_make(i, listenfd, addrlen);
     }

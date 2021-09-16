@@ -3,10 +3,7 @@
 //
 
 #include <unistd.h>
-#include <mutex>
 #include "../unp.h"
-
-std::mutex _mutex;
 
 void child_main(int i, int listenfd, int addrlen){
     int connfd;
@@ -17,12 +14,13 @@ void child_main(int i, int listenfd, int addrlen){
     fd_set	rset;
     cliaddr = static_cast<sockaddr *>(Malloc(addrlen));
     printf("child %ld starting\n", (long)getpid());
-
+    void my_lock_wait();
+    void my_lock_release();
     for (;;){
         clilen = addrlen;
-        std::unique_lock<std::mutex> lock(_mutex);
+        my_lock_wait();
         connfd = Accept(listenfd, cliaddr, &clilen);
-        lock.unlock();
+        my_lock_release();
         cptr[i]++;
         web_child(connfd);
         Close(connfd);
