@@ -39,6 +39,7 @@ size_t Read(int fd, void *ptr, size_t nbytes);
 size_t Readline(int fd, void *ptr, size_t maxlen);
 int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
+void Dup2(int, int);
 void *Malloc(size_t size);
 pid_t Fork(void);
 pid_t Waitpid(pid_t pid, int *iptr, int options);
