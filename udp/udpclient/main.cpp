@@ -50,11 +50,24 @@ void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t se
     struct sockaddr_in recvaddr{};
     bzero(&recvaddr, sizeof(recvaddr));
     recvaddr.sin_family = AF_INET;
-    recvaddr.sin_addr.s_addr = INADDR_BROADCAST;
+    recvaddr.sin_addr.s_addr = INADDR_ANY;
     recvaddr.sin_port = htons(13400);
-    uint8_t sendline[1024]{0x02, 0xFD, 0x00, 0x01, };   //vehicle identification request message
-    sendto(sockfd, sendline, strlen(sendline), 0, (sockaddr*)&recvaddr, sizeof(recvaddr));
+    //uint8_t sendline_vin[8]{0x02, 0xFD, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00};   //vehicle identification request message
+    uint8_t err_sendline_vin[8]{0x02, 0xFD, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00};   //vehicle identification request message
+    sendto(sockfd, err_sendline_vin, sizeof err_sendline_vin, 0, (sockaddr*)&recvaddr, sizeof(recvaddr));
 
+    do {
+        n = recvfrom(sockfd, recvline, 1024, 0, preply_addr, &len);
+        recvline[n] = 0;
+
+        printf("from %s:", sock_ntop_host(preply_addr, len));
+        for (int i = 0; i < n; ++i) {
+            uint8_t n = recvline[i];
+            int j = n;
+            std::cout << std::hex << std::showbase << j << " ";
+        }
+        std::cout << '\n';
+    } while (true);
     free(preply_addr);
 }
 
