@@ -1,3 +1,0 @@
-C:/Users/Qiang.Wang/source/repos/seeman1978/NetworkProgram/out/build/windows-default/CMakeFiles/NetworkProgram.dir
-C:/Users/Qiang.Wang/source/repos/seeman1978/NetworkProgram/out/build/windows-default/CMakeFiles/edit_cache.dir
-C:/Users/Qiang.Wang/source/repos/seeman1978/NetworkProgram/out/build/windows-default/CMakeFiles/rebuild_cache.dir
