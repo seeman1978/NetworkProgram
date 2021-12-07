@@ -39,12 +39,14 @@ size_t Read(int fd, void *ptr, size_t nbytes);
 size_t Readline(int fd, void *ptr, size_t maxlen);
 int Open(const char *pathname, int oflag, mode_t mode);
 void Close(int fd);
+void Dup2(int, int);
 void *Malloc(size_t size);
 pid_t Fork(void);
 pid_t Waitpid(pid_t pid, int *iptr, int options);
 int Fcntl(int fd, int cmd, int arg);
 int Fcntl(int fd, int cmd, int arg);
-void * Calloc(size_t n, size_t size);
+void* Calloc(size_t n, size_t size);
+void* Mmap(void *, size_t, int, int, int, off_t);
 int Ioctl(int fd, int request, void *arg);
 void Sysctl(int *name, u_int namelen, void *oldp, size_t *oldlenp, void *newp, size_t newlen);
 void Sigemptyset(sigset_t *);
@@ -134,4 +136,6 @@ int sock_cmp_addr(const struct sockaddr *sa1, const struct sockaddr *sa2, sockle
 int Sock_bind_wild(int sockfd, int family);
 int sock_bind_wild(int sockfd, int family);
 int sock_get_port(const struct sockaddr *sa, socklen_t salen);
+
+ssize_t Readn(int fd, void *ptr, size_t nbytes);
 #endif	/* __unp_h */

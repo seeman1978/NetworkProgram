@@ -50,3 +50,13 @@ void open_pcap()
 		printf("datalink=%d\n", datalink);
 	}
 }
+
+char* next_pcap(int *len) {
+	char* ptr;
+	struct pcap_pkthdr hdr;
+	while ((ptr = (char*)pcap_next(	pd, &hdr)) == nullptr) {
+		;
+	}
+	*len = hdr.caplen;
+	return ptr;
+}
