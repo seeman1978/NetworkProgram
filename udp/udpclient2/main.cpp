@@ -10,10 +10,10 @@ sock_ntop_host(const struct sockaddr *sa, socklen_t salen)
 
     switch (sa->sa_family) {
         case AF_INET: {
-            struct sockaddr_in	*sin = (struct sockaddr_in *) sa;
+            auto *sin = (struct sockaddr_in *) sa;
 
-            if (inet_ntop(AF_INET, &sin->sin_addr, str, sizeof(str)) == NULL)
-                return(NULL);
+            if (inet_ntop(AF_INET, &sin->sin_addr, str, sizeof(str)) == nullptr)
+                return(nullptr);
             return(str);
         }
         default:
@@ -47,8 +47,8 @@ void dg_cli(FILE *fp, int sockfd, const struct sockaddr* pservaddr, socklen_t se
 
         printf("from %s:", sock_ntop_host(preply_addr, len));
         for (int i = 0; i < n; ++i) {
-            uint8_t n = recvline[i];
-            int j = n;
+            uint8_t m = recvline[i];
+            int j = m;
             std::cout << std::hex << std::showbase << j << " ";
         }
         std::cout << '\n';
